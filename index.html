@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>リアルタイム文字起こし＆要約デモ</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Custom Tailwind configuration for better default styling
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#4f46e5', // Indigo-600
+                        'secondary': '#10b981', // Emerald-500
+                        'background-light': '#f9fafb', // Gray-50
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-background-light font-sans antialiased min-h-screen">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">リアルタイム文字起こし＆要約</h1>
+            <p class="text-lg text-gray-600">音声セグメントごとの文字起こしと、会話全体のリアルタイム要約</p>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Control Panel (Left Column: Col 1-2 on mobile, Col 1 on desktop) -->
+            <div class="lg:col-span-1 space-y-6">
+
+                <!-- Timer & Controls Card -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">コントロールパネル</h2>
+
+                    <!-- Timer Display -->
+                    <div id="timer-display"
+                        class="text-3xl font-extrabold text-primary mb-6 p-2 bg-indigo-50 rounded-lg text-center">
+                        0:00 seconds / 15 min
+                    </div>
+
+                    <!-- Language Selection -->
+                    <div id="language-dropdown" class="space-y-4 mb-6">
+                        <div class="flex flex-col">
+                            <label for="input-language" class="text-sm font-medium text-gray-700 mb-1">入力言語:</label>
+                            <select id="input-language" name="input-language"
+                                class="p-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                <option value="en">English (en)</option>
+                                <option value="es">Español (es)</option>
+                                <option value="ja" selected>日本語 (ja)</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="output-language" class="text-sm font-medium text-gray-700 mb-1">出力言語:</label>
+                            <select id="output-language" name="output-language"
+                                class="p-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary">
+                                <option value="en">English (en)</option>
+                                <option value="es">Español (es)</option>
+                                <option value="ja" selected>日本語 (ja)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex space-x-4">
+                        <button id="start-audio-session"
+                            class="flex-1 bg-primary text-white py-3 px-4 rounded-xl font-bold transition duration-150 ease-in-out hover:bg-indigo-700 disabled:bg-gray-400 shadow-md hover:shadow-lg">
+                            <span class="text-lg">🎙️ 録音スタート</span>
+                        </button>
+                        <button id="stop-audio-session" disabled
+                            class="flex-1 bg-red-500 text-white py-3 px-4 rounded-xl font-bold transition duration-150 ease-in-out hover:bg-red-700 disabled:bg-gray-400 shadow-md hover:shadow-lg">
+                            <span class="text-lg">🛑 録音ストップ</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Current Summary Card (Mobile View - Duplicated for better flow on desktop) -->
+                <div id="current-summary-mobile"
+                    class="lg:hidden bg-white p-6 rounded-xl shadow-lg border border-secondary transition duration-300">
+                    <h2 class="text-xl font-semibold text-secondary mb-3 border-b pb-2 border-secondary/20">現在の会話要約
+                    </h2>
+                    <div id="summary-content-mobile">
+                        <p class="text-gray-500 italic">録音を開始すると、要約がここにリアルタイムで更新されます。</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Summary & Logs (Right Column: Col 3 on desktop, Col 1-2 on mobile) -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- Current Summary Card (Desktop View) -->
+                <div id="current-summary-desktop"
+                    class="hidden lg:block bg-white p-6 rounded-xl shadow-lg border border-secondary transition duration-300">
+                    <h2 class="text-xl font-semibold text-secondary mb-3 border-b pb-2 border-secondary/20">現在の会話要約
+                    </h2>
+                    <div id="summary-content-desktop">
+                        <p class="text-gray-500 italic">録音を開始すると、要約がここにリアルタイムで更新されます。</p>
+                    </div>
+                </div>
+
+                <!-- Transcription Logs Card -->
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">リアルタイム文字起こしログ</h2>
+                    <div id="logs" class="space-y-4 p-2">
+                        <p class="text-gray-500 italic">ログはここに表示されます。</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="text-center mt-10 text-sm text-gray-500">
+            <p>&copy; 2025 Audio Transcription Demo. Powered by Gemini Nano in Chrome.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
+<script src="script.js"></script>
